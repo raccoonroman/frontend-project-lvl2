@@ -22,4 +22,4 @@ publish:
 .PHONY: test
 
 gendiff:
-	npx babel-node -- src/bin/gendiff.js
+	npx babel-node -- 'src/bin/gendiff.js' -h
