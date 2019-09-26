@@ -1,16 +1,16 @@
 #!/usr/bin/env node
 
 import commander from 'commander';
-import actOnConfigs from '../js/gendiff';
+import gendiff from '../js/gendiff';
 
 const program = new commander.Command();
 
 program
-  .version('0.1.2')
+  .version('0.2.0')
   .description('Compares two configuration files and shows a difference.')
   .option('-f, --format [type]', 'Output format')
 
   .arguments('<firstConfig> <secondConfig>')
-  .action(actOnConfigs);
+  .action(gendiff);
 
 program.parse(process.argv);

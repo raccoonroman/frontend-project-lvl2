@@ -1,4 +1,3 @@
-import 'source-map-support/register';
-import half from './half';
+import gendiff from './js/gendiff';
 
-export default half;
+export default gendiff;

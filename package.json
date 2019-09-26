@@ -1,6 +1,6 @@
 {
   "name": "ronir-difference-calculator",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Hexlet project level 2 - difference calculator",
   "main": "dist/index.js",
   "bin": {
@@ -41,6 +41,7 @@
     "@babel/plugin-proposal-pipeline-operator": "^7.3.2",
     "commander": "^2.20.0",
     "gulp": "^4.0.0",
+    "lodash": "^4.17.15",
     "source-map-support": "^0.5.10"
   },
   "devDependencies": {
