@@ -1,22 +1,41 @@
-import _ from 'lodash';
+import { has } from 'lodash';
 
-export default (config1, config2) => {
-  const config1Keys = Object.keys(config1);
-  const config2Keys = Object.keys(config2);
-  const config1Arr = config1Keys.reduce((acc, key) => {
-    if (_.has(config2, key) && config1[key] === config2[key]) {
-      return [...acc, `    ${key}: ${config1[key]}`];
-    }
-    if (_.has(config2, key)) {
-      return [...acc, `  + ${key}: ${config2[key]}`, `  - ${key}: ${config1[key]}`];
-    }
-    return [...acc, `  - ${key}: ${config1[key]}`];
+const propertyActions = [
+  {
+    name: 'unchanged',
+    check: (obj1, obj2, key) => has(obj1, key) && has(obj2, key) && obj1[key] === obj2[key],
+    result: (obj1, obj2, key) => `    ${key}: ${obj1[key]}`,
+  },
+  {
+    name: 'changedValue',
+    check: (obj1, obj2, key) => has(obj1, key) && has(obj2, key) && obj1[key] !== obj2[key],
+    result: (obj1, obj2, key) => `  + ${key}: ${obj2[key]}\n  - ${key}: ${obj1[key]}`,
+  },
+  {
+    name: 'deletedValue',
+    check: (obj1, obj2, key) => has(obj1, key) && !has(obj2, key),
+    result: (obj1, obj2, key) => `  - ${key}: ${obj1[key]}`,
+  },
+  {
+    name: 'addedValue',
+    check: (obj1, obj2, key) => !has(obj1, key) && has(obj2, key),
+    result: (obj1, obj2, key) => `  + ${key}: ${obj2[key]}`,
+  },
+];
+
+const getPropertyAction = (file1, file2, key) => propertyActions.find(({ check }) => check(file1, file2, key));
+
+export default (file1, file2) => {
+  const file1Keys = Object.keys(file1);
+  const file2Keys = Object.keys(file2);
+  const file2FilteredKeys = file2Keys.filter(key => !has(file1, key));
+  const file1Arr = file1Keys.reduce((acc, key) => {
+    const { result } = getPropertyAction(file1, file2, key);
+    return [...acc, result(file1, file2, key)];
   }, []);
-  const config2Arr = config2Keys.reduce((acc, key) => {
-    if (!_.has(config1, key)) {
-      return [...acc, `  + ${key}: ${config2[key]}`];
-    }
-    return acc;
+  const file2Arr = file2FilteredKeys.reduce((acc, key) => {
+    const { result } = getPropertyAction(file1, file2, key);
+    return [...acc, result(file1, file2, key)];
   }, []);
-  return `{\n${config1Arr.concat(config2Arr).join('\n')}\n}`;
+  return `{\n${file1Arr.concat(file2Arr).join('\n')}\n}`;
 };
