@@ -1,4 +1,5 @@
 import { has } from 'lodash';
+import fs from 'fs';
 
 const propertyActions = [
   {
@@ -23,19 +24,25 @@ const propertyActions = [
   },
 ];
 
-const getPropertyAction = (file1, file2, key) => propertyActions.find(({ check }) => check(file1, file2, key));
+const getPropertyAction = (obj1, obj2, key) => propertyActions.find(({ check }) => check(obj1, obj2, key));
 
 export default (file1, file2) => {
-  const file1Keys = Object.keys(file1);
-  const file2Keys = Object.keys(file2);
-  const file2FilteredKeys = file2Keys.filter(key => !has(file1, key));
-  const file1Arr = file1Keys.reduce((acc, key) => {
-    const { result } = getPropertyAction(file1, file2, key);
-    return [...acc, result(file1, file2, key)];
+  const beforeJson = fs.readFileSync(`${file1}`, 'utf8');
+  const afterJson = fs.readFileSync(`${file2}`, 'utf8');
+
+  const obj1 = JSON.parse(beforeJson);
+  const obj2 = JSON.parse(afterJson);
+  const obj1Keys = Object.keys(obj1);
+  const obj2Keys = Object.keys(obj2);
+  const obj2FilteredKeys = obj2Keys.filter(key => !has(obj1, key));
+  const obj1Arr = obj1Keys.reduce((acc, key) => {
+    const { result } = getPropertyAction(obj1, obj2, key);
+    return [...acc, result(obj1, obj2, key)];
   }, []);
-  const file2Arr = file2FilteredKeys.reduce((acc, key) => {
-    const { result } = getPropertyAction(file1, file2, key);
-    return [...acc, result(file1, file2, key)];
+  const obj2Arr = obj2FilteredKeys.reduce((acc, key) => {
+    const { result } = getPropertyAction(obj1, obj2, key);
+    return [...acc, result(obj1, obj2, key)];
   }, []);
-  return `{\n${file1Arr.concat(file2Arr).join('\n')}\n}`;
+  console.log(`{\n${obj1Arr.concat(obj2Arr).join('\n')}\n}`);
+  return `{\n${obj1Arr.concat(obj2Arr).join('\n')}\n}`;
 };

@@ -1,27 +1,7 @@
 import gendiff from '../src';
-
-const file1 = {
-  host: 'hexlet.io',
-  timeout: 50,
-  proxy: '123.234.53.22',
-  follow: false,
-};
-
-const file2 = {
-  timeout: 20,
-  verbose: true,
-  host: 'hexlet.io',
-};
-
-const result = `{
-    host: hexlet.io
-  + timeout: 20
-  - timeout: 50
-  - proxy: 123.234.53.22
-  - follow: false
-  + verbose: true
-}`;
+import result from '../__fixtures__/result';
 
 test('gendiff', () => {
-  expect(gendiff(file1, file2)).toBe(result);
+  expect(gendiff('./__fixtures__/before.json', './__fixtures__/after.json')).toBe(result);
+  expect(gendiff(`${__dirname}/../__fixtures__/before.json`, `${__dirname}/../__fixtures__/after.json`)).toBe(result);
 });
