@@ -24,7 +24,10 @@ const propertyActions = [
   },
 ];
 
-const getPropertyAction = (obj1, obj2, key) => propertyActions.find(({ check }) => check(obj1, obj2, key));
+const getPropertyAction = (obj1, obj2, key) => {
+  const result = propertyActions.find(({ check }) => check(obj1, obj2, key));
+  return result;
+};
 
 export default (file1, file2) => {
   const beforeJson = fs.readFileSync(`${file1}`, 'utf8');
