@@ -41,6 +41,7 @@
     "@babel/plugin-proposal-pipeline-operator": "^7.5.0",
     "commander": "^2.20.1",
     "gulp": "^4.0.2",
+    "js-yaml": "^3.13.1",
     "lodash": "^4.17.15",
     "source-map-support": "^0.5.13"
   },
