@@ -1,5 +1,5 @@
 import { has } from 'lodash';
-import fs from 'fs';
+import parse from '../parsers';
 
 const propertyActions = [
   {
@@ -38,11 +38,8 @@ const toStringObjKeys = (objKeys, obj1, obj2) => {
 };
 
 export default (file1, file2) => {
-  const beforeJson = fs.readFileSync(`${file1}`, 'utf8');
-  const afterJson = fs.readFileSync(`${file2}`, 'utf8');
-
-  const obj1 = JSON.parse(beforeJson);
-  const obj2 = JSON.parse(afterJson);
+  const obj1 = parse(file1);
+  const obj2 = parse(file2);
   const obj1Keys = Object.keys(obj1);
   const obj2Keys = Object.keys(obj2);
   const obj2FilteredKeys = obj2Keys.filter(key => !has(obj1, key));
