@@ -1,7 +1,7 @@
 import gendiff from '../src';
 import expected from '../__fixtures__/expected';
 
-const formats = ['json', 'yml'];
+const formats = ['json', 'yml', 'ini'];
 const relativePath = './__fixtures__/';
 const absolutePath = `${__dirname}/../__fixtures__/`;
 
