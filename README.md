@@ -12,3 +12,6 @@ Step 2
 
 Step 3
 [![asciicast](https://asciinema.org/a/PJGmyaaoJczyy35aKFclOcyDD.svg)](https://asciinema.org/a/PJGmyaaoJczyy35aKFclOcyDD)
+
+Step 4
+[![asciicast](https://asciinema.org/a/mlGA8Pq2ONmGq7HjO95rlwSo2.svg)](https://asciinema.org/a/mlGA8Pq2ONmGq7HjO95rlwSo2)
