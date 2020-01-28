@@ -182,8 +182,8 @@ const gendiff = (file1, file2) => {
 
   const result = `{\n${stringify(ast)}\n}`;
 
-  const jsonPath = path.join(__dirname, '..', '..', '__fixtures__', 'actual.json');
-  fs.writeFileSync(jsonPath, result);
+  // const jsonPath = path.join(__dirname, '..', '..', '__fixtures__', 'actual.json');
+  // fs.writeFileSync(jsonPath, result);
 
   return result;
 };
