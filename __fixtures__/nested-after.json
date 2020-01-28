@@ -22,6 +22,13 @@
   },
 
   "group3": {
-    "fee": "100500"
+    "fee": "100500",
+    "another": "chance",
+    "arbitrary": {
+      "some": "water",
+      "get": {
+        "my": "balls"
+      }
+    }
   }
 }

@@ -1,6 +1,5 @@
 export default `{
     common: {
-      + follow: false
         setting1: Value 1
       - setting2: 200
       - setting3: true
@@ -11,14 +10,15 @@ export default `{
             key: value
           + ops: vops
         }
+      + follow: false
       + setting4: blah blah
       + setting5: {
             key5: value5
         }
     }
     group1: {
-      + baz: bars
       - baz: bas
+      + baz: bars
         foo: bar
       - nest: {
             key: value
@@ -30,5 +30,12 @@ export default `{
     }
   + group3: {
         fee: 100500
+        another: chance
+        arbitrary: {
+            some: water
+            get: {
+                my: balls
+            }
+        }
     }
 }`;

@@ -3,10 +3,30 @@ import fs from 'fs';
 import path from 'path';
 import parse from '../parsers';
 
+
+const indentation = '    ';
+
+
 const areBothValuesObjects = (obj1, obj2, key) => {
   const firstValueIsObject = obj1[key] instanceof Object;
   const secondValueIsObject = obj2[key] instanceof Object;
   return firstValueIsObject && secondValueIsObject;
+};
+
+const convertObjectToString = (obj, nestingLevel) => {
+  const keys = Object.keys(obj);
+  const nestedIndents = indentation.repeat((nestingLevel + 1));
+
+  const keysString = keys.map((it) => {
+    let value = obj[it];
+    if (value instanceof Object) {
+      value = `{\n${convertObjectToString(obj[it], nestingLevel + 1)}${nestedIndents}}`;
+    }
+
+    return `${nestedIndents}${it}: ${value}\n`;
+  });
+
+  return keysString.join('');
 };
 
 const propertyActions = [
@@ -16,22 +36,60 @@ const propertyActions = [
       const sameValues = has(obj1, key) && has(obj2, key) && obj1[key] === obj2[key];
       return sameValues || areBothValuesObjects(obj1, obj2, key);
     },
-    toString: (key, oldValue, newValue) => `    ${key}: ${newValue}`,
+    toString: (nestingLevel, key, oldValue, newValue) => {
+      const indents = indentation.repeat(nestingLevel);
+      return `${indents}${key}: ${newValue}`;
+    },
   },
   {
     state: 'changed',
     check: (obj1, obj2, key) => has(obj1, key) && has(obj2, key) && obj1[key] !== obj2[key],
-    toString: (key, oldValue, newValue) => `  + ${key}: ${newValue}\n  - ${key}: ${oldValue}`,
+    toString: (nestingLevel, key, oldValue, newValue) => {
+      const indents = indentation.repeat(nestingLevel);
+      const indentsOnUpLevel = indentation.repeat(nestingLevel - 1);
+      let oldValueStr = oldValue;
+      let newValueStr = newValue;
+
+      if (oldValue instanceof Object) {
+        oldValueStr = `{\n${convertObjectToString(oldValue, nestingLevel)}${indents}}`;
+      }
+
+      if (newValue instanceof Object) {
+        newValueStr = `{\n${convertObjectToString(newValue, nestingLevel)}${indents}}`;
+      }
+
+      return `${indentsOnUpLevel}  - ${key}: ${oldValueStr}\n${indentsOnUpLevel}  + ${key}: ${newValueStr}`;
+    },
   },
   {
     state: 'deleted',
     check: (obj1, obj2, key) => has(obj1, key) && !has(obj2, key),
-    toString: (key, oldValue) => `  - ${key}: ${oldValue}`,
+    toString: (nestingLevel, key, oldValue) => {
+      const indents = indentation.repeat(nestingLevel);
+      const indentsOnUpLevel = indentation.repeat(nestingLevel - 1);
+      let oldValueStr = oldValue;
+
+      if (oldValue instanceof Object) {
+        oldValueStr = `{\n${convertObjectToString(oldValue, nestingLevel)}${indents}}`;
+      }
+
+      return `${indentsOnUpLevel}  - ${key}: ${oldValueStr}`;
+    },
   },
   {
     state: 'added',
     check: (obj1, obj2, key) => !has(obj1, key) && has(obj2, key),
-    toString: (key, oldValue, newValue) => `  + ${key}: ${newValue}`,
+    toString: (nestingLevel, key, oldValue, newValue) => {
+      const indents = indentation.repeat(nestingLevel);
+      const indentsOnUpLevel = indentation.repeat(nestingLevel - 1);
+      let newValueStr = newValue;
+
+      if (newValue instanceof Object) {
+        newValueStr = `{\n${convertObjectToString(newValue, nestingLevel)}${indents}}`;
+      }
+
+      return `${indentsOnUpLevel}  + ${key}: ${newValueStr}`;
+    },
   },
 ];
 
@@ -45,9 +103,9 @@ const getToStringMethod = (currentState) => {
   return toString;
 };
 
-const getObjState = (obj1, obj2, key) => {
+const getObjState = (obj1, obj2, key, nestingLevel) => {
   const state = getStateOfKey(obj1, obj2, key);
-  const result = { state, key };
+  const result = { state, nestingLevel, key };
 
   if (Object.prototype.hasOwnProperty.call(obj1, key)) {
     result.oldValue = obj1[key];
@@ -60,13 +118,13 @@ const getObjState = (obj1, obj2, key) => {
   return result;
 };
 
-const genDiffFromObjects = (obj1, obj2) => {
+const genDiffFromObjects = (obj1, obj2, nestingLevel) => {
   const keysWithChildren = [];
   const obj1Keys = Object.keys(obj1);
   const obj2Keys = Object.keys(obj2);
 
   const diffFromObject1 = obj1Keys.map((key) => {
-    const stateObj = getObjState(obj1, obj2, key);
+    const stateObj = getObjState(obj1, obj2, key, nestingLevel);
     const bothValuesObjects = areBothValuesObjects(obj1, obj2, key);
 
     if (bothValuesObjects) {
@@ -76,41 +134,58 @@ const genDiffFromObjects = (obj1, obj2) => {
     return stateObj;
   });
 
-  const diffFromObject2 = obj2Keys.map(key => getObjState(obj1, obj2, key));
+  const diffFromObject2 = obj2Keys.map(key => getObjState(obj1, obj2, key, nestingLevel));
 
   const result = uniqBy([...diffFromObject1, ...diffFromObject2], 'key');
 
   keysWithChildren.forEach((it) => {
     const obj = result.find(({ key }) => key === it);
+    const childrenNestingLevel = nestingLevel + 1;
     delete obj.oldValue;
     delete obj.newValue;
-    obj.children = genDiffFromObjects(obj1[it], obj2[it]);
+    obj.children = genDiffFromObjects(obj1[it], obj2[it], childrenNestingLevel);
   });
 
   return result;
+};
+
+const stringify = (ast) => {
+  const result = ast.map((it) => {
+    const {
+      state,
+      nestingLevel,
+      key,
+      oldValue,
+      newValue,
+      children,
+    } = it;
+    const toString = getToStringMethod(state);
+    const indents = indentation.repeat(nestingLevel);
+
+    if (children) {
+      return `${indents}${key}: {\n${stringify(children)}\n${indents}}`;
+    }
+
+    return toString(nestingLevel, key, oldValue, newValue);
+  });
+
+  return result.join('\n');
 };
 
 const gendiff = (file1, file2) => {
   const obj1 = parse(file1);
   const obj2 = parse(file2);
-  const result = genDiffFromObjects(obj1, obj2);
+  const ast = genDiffFromObjects(obj1, obj2, 1);
+
+  const jsonPath2 = path.join(__dirname, '..', '..', '__fixtures__', 'ast.json');
+  fs.writeFileSync(jsonPath2, JSON.stringify(ast));
+
+  const result = `{\n${stringify(ast)}\n}`;
+
+  const jsonPath = path.join(__dirname, '..', '..', '__fixtures__', 'actual.json');
+  fs.writeFileSync(jsonPath, result);
+
   return result;
 };
 
-const stringify = (file1, file2) => {
-  const diff = gendiff(file1, file2);
-
-  const jsonPath = path.join(__dirname, '..', '..', '__fixtures__', 'actual.json');
-  fs.writeFileSync(jsonPath, JSON.stringify(diff));
-
-  const result = diff.map((it) => {
-    const {
-      state, key, oldValue, newValue,
-    } = it;
-    const toString = getToStringMethod(state);
-    return toString(key, oldValue, newValue);
-  });
-  return `{\n${result.join('\n')}\n}`;
-};
-
-export default stringify;
+export default gendiff;
