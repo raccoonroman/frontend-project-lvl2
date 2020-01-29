@@ -3,7 +3,6 @@ import expected from '../__fixtures__/expected';
 import nestedExpected from '../__fixtures__/nested-expected';
 
 const formats = ['json', 'yml', 'ini'];
-// const formats = ['json'];
 const relativePath = './__fixtures__/';
 const absolutePath = `${__dirname}/../__fixtures__/`;
 
