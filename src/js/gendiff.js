@@ -1,6 +1,6 @@
 import { has, uniqBy } from 'lodash';
-import fs from 'fs';
-import path from 'path';
+// import fs from 'fs';
+// import path from 'path';
 import parse from '../parsers';
 
 
@@ -173,14 +173,15 @@ const gendiff = (file1, file2) => {
   const obj2 = parse(file2);
   const ast = genDiffFromObjects(obj1, obj2, 1);
 
-  const jsonPath2 = path.join(__dirname, '..', '..', '__fixtures__', 'ast.json');
-  fs.writeFileSync(jsonPath2, JSON.stringify(ast));
+  // const jsonPath2 = path.join(__dirname, '..', '..', '__fixtures__', 'ast.json');
+  // fs.writeFileSync(jsonPath2, JSON.stringify(ast));
 
   const result = `{\n${stringify(ast)}\n}`;
 
   // const jsonPath = path.join(__dirname, '..', '..', '__fixtures__', 'actual.json');
   // fs.writeFileSync(jsonPath, result);
 
+  console.log(result);
   return result;
 };
 

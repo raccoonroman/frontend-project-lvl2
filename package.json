@@ -1,6 +1,6 @@
 {
   "name": "ronir-difference-calculator",
-  "version": "0.4.0",
+  "version": "0.5.1",
   "description": "Hexlet project level 2 - difference calculator",
   "main": "dist/index.js",
   "bin": {
