@@ -6,6 +6,13 @@ import parse from '../parsers';
 
 const indentation = '    ';
 
+const getIndents = (nestingLevel) => {
+  const current = indentation.repeat(nestingLevel);
+  const onUpLevel = indentation.repeat(nestingLevel - 1);
+  const onDownLevel = indentation.repeat((nestingLevel + 1));
+  const indents = { current, onUpLevel, onDownLevel };
+  return indents;
+};
 
 const areBothValuesObjects = (obj1, obj2, key) => {
   const firstValueIsObject = obj1[key] instanceof Object;
@@ -15,19 +22,29 @@ const areBothValuesObjects = (obj1, obj2, key) => {
 
 const convertObjectToString = (obj, nestingLevel) => {
   const keys = Object.keys(obj);
-  const nestedIndents = indentation.repeat((nestingLevel + 1));
+  const indents = getIndents(nestingLevel);
 
   const keysString = keys.map((it) => {
     let value = obj[it];
     if (value instanceof Object) {
-      value = `{\n${convertObjectToString(obj[it], nestingLevel + 1)}${nestedIndents}}`;
+      value = `{\n${convertObjectToString(obj[it], nestingLevel + 1)}${indents.onDownLevel}}`;
     }
 
-    return `${nestedIndents}${it}: ${value}\n`;
+    return `${indents.onDownLevel}${it}: ${value}\n`;
   });
 
   return keysString.join('');
 };
+
+const getValueString = (value, nestingLevel) => {
+  const indents = getIndents(nestingLevel);
+  if (value instanceof Object) {
+    return `{\n${convertObjectToString(value, nestingLevel)}${indents.current}}`;
+  }
+
+  return value;
+};
+
 
 const propertyActions = [
   {
@@ -37,61 +54,40 @@ const propertyActions = [
       return sameValues || areBothValuesObjects(obj1, obj2, key);
     },
     toString: (nestingLevel, key, oldValue, newValue) => {
-      const indents = indentation.repeat(nestingLevel);
-      return `${indents}${key}: ${newValue}`;
+      const indents = getIndents(nestingLevel);
+      return `${indents.current}${key}: ${newValue}`;
     },
   },
   {
     state: 'changed',
     check: (obj1, obj2, key) => has(obj1, key) && has(obj2, key) && obj1[key] !== obj2[key],
     toString: (nestingLevel, key, oldValue, newValue) => {
-      const indents = indentation.repeat(nestingLevel);
-      const indentsOnUpLevel = indentation.repeat(nestingLevel - 1);
-      let oldValueStr = oldValue;
-      let newValueStr = newValue;
-
-      if (oldValue instanceof Object) {
-        oldValueStr = `{\n${convertObjectToString(oldValue, nestingLevel)}${indents}}`;
-      }
-
-      if (newValue instanceof Object) {
-        newValueStr = `{\n${convertObjectToString(newValue, nestingLevel)}${indents}}`;
-      }
-
-      return `${indentsOnUpLevel}  - ${key}: ${oldValueStr}\n${indentsOnUpLevel}  + ${key}: ${newValueStr}`;
+      const indents = getIndents(nestingLevel);
+      const oldValueString = getValueString(oldValue, nestingLevel);
+      const newValueString = getValueString(newValue, nestingLevel);
+      return `${indents.onUpLevel}  - ${key}: ${oldValueString}\n${indents.onUpLevel}  + ${key}: ${newValueString}`;
     },
   },
   {
     state: 'deleted',
     check: (obj1, obj2, key) => has(obj1, key) && !has(obj2, key),
     toString: (nestingLevel, key, oldValue) => {
-      const indents = indentation.repeat(nestingLevel);
-      const indentsOnUpLevel = indentation.repeat(nestingLevel - 1);
-      let oldValueStr = oldValue;
-
-      if (oldValue instanceof Object) {
-        oldValueStr = `{\n${convertObjectToString(oldValue, nestingLevel)}${indents}}`;
-      }
-
-      return `${indentsOnUpLevel}  - ${key}: ${oldValueStr}`;
+      const indents = getIndents(nestingLevel);
+      const oldValueString = getValueString(oldValue, nestingLevel);
+      return `${indents.onUpLevel}  - ${key}: ${oldValueString}`;
     },
   },
   {
     state: 'added',
     check: (obj1, obj2, key) => !has(obj1, key) && has(obj2, key),
     toString: (nestingLevel, key, oldValue, newValue) => {
-      const indents = indentation.repeat(nestingLevel);
-      const indentsOnUpLevel = indentation.repeat(nestingLevel - 1);
-      let newValueStr = newValue;
-
-      if (newValue instanceof Object) {
-        newValueStr = `{\n${convertObjectToString(newValue, nestingLevel)}${indents}}`;
-      }
-
-      return `${indentsOnUpLevel}  + ${key}: ${newValueStr}`;
+      const indents = getIndents(nestingLevel);
+      const newValueString = getValueString(newValue, nestingLevel);
+      return `${indents.onUpLevel}  + ${key}: ${newValueString}`;
     },
   },
 ];
+
 
 const getStateOfKey = (obj1, obj2, key) => {
   const { state } = propertyActions.find(({ check }) => check(obj1, obj2, key));
