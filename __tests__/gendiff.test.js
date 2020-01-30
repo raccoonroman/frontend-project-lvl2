@@ -1,22 +1,22 @@
 import gendiff from '../src';
-import expected from '../__fixtures__/expected';
-import nestedExpected from '../__fixtures__/nested-expected';
+import expectedRegular from '../__fixtures__/expected-regular';
+import expectedRegularNested from '../__fixtures__/expected-regular-nested';
 
-const formats = ['json', 'yml', 'ini'];
+const extensions = ['json', 'yml', 'ini'];
 const relativePath = './__fixtures__/';
 const absolutePath = `${__dirname}/../__fixtures__/`;
 
-const getResult = (pathType, format) => gendiff(`${pathType}before.${format}`, `${pathType}after.${format}`);
+const getResultInRegularFormat = (pathType, extension) => gendiff(`${pathType}before.${extension}`, `${pathType}after.${extension}`, { format: 'regular' });
 
-const getNestedResult = (pathType, format) => gendiff(`${pathType}nested-before.${format}`, `${pathType}nested-after.${format}`);
+const getNestedResultInRegularFormat = (pathType, extension) => gendiff(`${pathType}nested-before.${extension}`, `${pathType}nested-after.${extension}`, { format: 'regular' });
 
 
-test.each(formats)('gendiff %s', (format) => {
-  expect(getResult(relativePath, format)).toBe(expected);
-  expect(getResult(absolutePath, format)).toBe(expected);
+test.each(extensions)('gendiff %s', (extension) => {
+  expect(getResultInRegularFormat(relativePath, extension)).toBe(expectedRegular);
+  expect(getResultInRegularFormat(absolutePath, extension)).toBe(expectedRegular);
 });
 
-test.each(formats)('gendiff nested %s', (format) => {
-  expect(getNestedResult(relativePath, format)).toBe(nestedExpected);
-  expect(getNestedResult(absolutePath, format)).toBe(nestedExpected);
+test.each(extensions)('gendiff nested %s', (extension) => {
+  expect(getNestedResultInRegularFormat(relativePath, extension)).toBe(expectedRegularNested);
+  expect(getNestedResultInRegularFormat(absolutePath, extension)).toBe(expectedRegularNested);
 });

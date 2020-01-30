@@ -3,6 +3,7 @@ import { has, uniqBy } from 'lodash';
 // import path from 'path';
 import parse from '../parsers';
 import formatRegular from '../formatters/formatter-regular';
+import formatPlain from '../formatters/formatter-plain';
 
 
 const areBothValuesObjects = (obj1, obj2, key) => {
@@ -86,7 +87,8 @@ const genDiffAST = (obj1, obj2, nestingLevel) => {
   return result;
 };
 
-const gendiff = (file1, file2) => {
+const gendiff = (file1, file2, { format = 'regular' }) => {
+  console.log(file1, file2, format);
   const obj1 = parse(file1);
   const obj2 = parse(file2);
   const ast = genDiffAST(obj1, obj2, 1);
