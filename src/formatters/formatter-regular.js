@@ -51,7 +51,7 @@ const propertyActions = [
     },
   },
   {
-    state: 'deleted',
+    state: 'removed',
     toString: (nestingLevel, key, oldValue) => {
       const indents = getIndents(nestingLevel);
       const oldValueString = getValueString(oldValue, nestingLevel);
