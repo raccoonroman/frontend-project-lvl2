@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.com/raccoonroman/frontend-project-lvl2.svg?branch=master)](https://travis-ci.com/raccoonroman/frontend-project-lvl2)
-
+![](https://github.com/raccoonroman/frontend-project-lvl2/workflows/Greet%20Everyone/badge.svg)
 [![Maintainability](https://api.codeclimate.com/v1/badges/557d1309e3c87772fc83/maintainability)](https://codeclimate.com/github/raccoonroman/frontend-project-lvl2/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/557d1309e3c87772fc83/test_coverage)](https://codeclimate.com/github/raccoonroman/frontend-project-lvl2/test_coverage)
 
