@@ -1,5 +1,5 @@
-import fs from 'fs';
-import path from 'path';
+// import fs from 'fs';
+// import path from 'path';
 import parse from '../parsers';
 import buildAst from '../build-ast';
 import formatRegular from '../formatters/formatter-regular';
@@ -9,29 +9,29 @@ import formatPlain from '../formatters/formatter-plain';
 const formaters = [
   {
     name: 'regular',
-    format: ast => formatRegular(ast),
+    formatDiff: ast => formatRegular(ast),
   },
   {
     name: 'plain',
-    format: ast => formatPlain(ast),
+    formatDiff: ast => formatPlain(ast),
   },
 ];
 
 
-const getFormater = (formatName) => {
-  const { format } = formaters.find(({ name }) => name === formatName);
-  return format;
+const getFormater = (format) => {
+  const { formatDiff } = formaters.find(({ name }) => name === format);
+  return formatDiff;
 };
 
-const gendiff = (file1, file2, { formatName = 'regular' }) => {
+const gendiff = (file1, file2, { format = 'regular' }) => {
   const obj1 = parse(file1);
   const obj2 = parse(file2);
-  const format = getFormater(formatName);
+  const formatDiff = getFormater(format);
   const ast = buildAst(obj1, obj2);
-  const result = format(ast);
+  const result = formatDiff(ast);
 
-  const jsonPath2 = path.join(__dirname, '..', '..', '__fixtures__', 'ast.json');
-  fs.writeFileSync(jsonPath2, JSON.stringify(ast));
+  // const jsonPath2 = path.join(__dirname, '..', '..', '__fixtures__', 'ast.json');
+  // fs.writeFileSync(jsonPath2, JSON.stringify(ast));
 
   // const jsonPath = path.join(__dirname, '..', '..', '__fixtures__', 'actual.js');
   // fs.writeFileSync(jsonPath, format);

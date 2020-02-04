@@ -7,11 +7,11 @@ const extensions = ['json', 'yml', 'ini'];
 const relativePath = './__fixtures__/';
 const absolutePath = `${__dirname}/../__fixtures__/`;
 
-const getResultInRegularFormat = (pathType, extension) => gendiff(`${pathType}before.${extension}`, `${pathType}after.${extension}`, { formatName: 'regular' });
+const getResultInRegularFormat = (pathType, extension) => gendiff(`${pathType}before.${extension}`, `${pathType}after.${extension}`, { format: 'regular' });
 
-const getNestedResultInRegularFormat = (pathType, extension) => gendiff(`${pathType}nested-before.${extension}`, `${pathType}nested-after.${extension}`, { formatName: 'regular' });
+const getNestedResultInRegularFormat = (pathType, extension) => gendiff(`${pathType}nested-before.${extension}`, `${pathType}nested-after.${extension}`, { format: 'regular' });
 
-const getNestedResultInPlainFormat = (pathType, extension) => gendiff(`${pathType}nested-before.${extension}`, `${pathType}nested-after.${extension}`, { formatName: 'plain' });
+const getNestedResultInPlainFormat = (pathType, extension) => gendiff(`${pathType}nested-before.${extension}`, `${pathType}nested-after.${extension}`, { format: 'plain' });
 
 
 test.each(extensions)('gendiff %s', (extension) => {
@@ -26,5 +26,5 @@ test.each(extensions)('gendiff nested %s', (extension) => {
 
 test.each(extensions)('gendiff plain %s', (extension) => {
   expect(getNestedResultInPlainFormat(relativePath, extension)).toBe(expectedPlain);
-  // expect(getNestedResultInPlainFormat(absolutePath, extension)).toBe(expectedPlain);
+  expect(getNestedResultInPlainFormat(absolutePath, extension)).toBe(expectedPlain);
 });

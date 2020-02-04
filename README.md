@@ -18,3 +18,6 @@ Step 4
 
 Step 5
 [![asciicast](https://asciinema.org/a/uZiB22AiONeoxio7oTUirJcyt.svg)](https://asciinema.org/a/uZiB22AiONeoxio7oTUirJcyt)
+
+Step 6
+[![asciicast](https://asciinema.org/a/nC2X3SUvoP1D8m8FvDulQ3NVI.svg)](https://asciinema.org/a/nC2X3SUvoP1D8m8FvDulQ3NVI)

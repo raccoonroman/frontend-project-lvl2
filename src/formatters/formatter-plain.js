@@ -4,6 +4,9 @@ const buildValueString = (value) => {
   if (isComplexValue(value)) {
     return '[complex value]';
   }
+  if (typeof value === 'string') {
+    return `'${value}'`;
+  }
 
   return value;
 };
@@ -11,7 +14,7 @@ const buildValueString = (value) => {
 const propertyActions = [
   {
     state: 'unchanged',
-    toString: () => '',
+    toString: () => false,
   },
   {
     state: 'changed',
@@ -43,17 +46,23 @@ const formatPlain = (ast) => {
   const result = ast.map((it) => {
     const {
       state,
-      key,
+      keysChain,
       oldValue,
       newValue,
+      children,
     } = it;
 
-    const toString = getToStringMethod(state);
+    if (children) {
+      return formatPlain(children);
+    }
 
-    return toString(key, newValue, oldValue);
+    const toString = getToStringMethod(state);
+    const keysChainString = keysChain.join('.');
+
+    return toString(keysChainString, newValue, oldValue);
   });
 
-  return result.filter(i => i !== '').join('\n');
+  return result.filter(i => !!i).join('\n');
 };
 
 export default formatPlain;

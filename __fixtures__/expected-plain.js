@@ -1,5 +1,4 @@
-export default `
-Property 'common.setting2' was removed
+export default `Property 'common.setting2' was removed
 Property 'common.setting3' was updated. From true to [complex value]
 Property 'common.setting6.ops' was added with value: 'vops'
 Property 'common.follow' was added with value: false
