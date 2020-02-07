@@ -18,18 +18,3 @@ formats.forEach((format, i) => {
     expect(getResult(absolutePath, extension, format)).toBe(results[i]);
   });
 });
-
-// test.each(extensions)('gendiff nested %s', (extension) => {
-//   expect(getResult(relativePath, extension, format.regular)).toBe(expectedRegular);
-//   expect(getResult(absolutePath, extension, format.regular)).toBe(expectedRegular);
-// });
-
-// test.each(extensions)('gendiff plain %s', (extension) => {
-//   expect(getResult(relativePath, extension, format.plain)).toBe(expectedPlain);
-//   expect(getResult(absolutePath, extension, format.plain)).toBe(expectedPlain);
-// });
-
-// test.each(extensions)('gendiff json %s', (extension) => {
-//   expect(getResult(relativePath, extension, format.json)).toBe(expectedJson);
-//   expect(getResult(absolutePath, extension, format.json)).toBe(expectedJson);
-// });
