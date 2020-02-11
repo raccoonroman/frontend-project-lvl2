@@ -1,8 +1,8 @@
-import parse from '../parsers';
-import buildAst from '../build-ast';
-import formatRegular from '../formatters/formatter-regular';
-import formatPlain from '../formatters/formatter-plain';
-import formatJson from '../formatters/formatter-json';
+import parse from './parsers';
+import buildAst from './build-ast';
+import formatRegular from './formatters/formatter-regular';
+import formatPlain from './formatters/formatter-plain';
+import formatJson from './formatters/formatter-json';
 
 
 const formaters = [
