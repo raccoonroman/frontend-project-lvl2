@@ -1,3 +1,6 @@
+import getPropertyAction from '../utils';
+
+
 const indentation = '    ';
 
 const getIndents = (nestingLevel) => {
@@ -68,11 +71,6 @@ const propertyActions = [
   },
 ];
 
-const getToStringMethod = (currentState) => {
-  const { toString } = propertyActions.find(({ state }) => state === currentState);
-  return toString;
-};
-
 const formatRegular = (ast) => {
   const format = (arr) => {
     const result = arr.map((it) => {
@@ -84,7 +82,7 @@ const formatRegular = (ast) => {
         newValue,
         children,
       } = it;
-      const toString = getToStringMethod(state);
+      const { toString } = getPropertyAction(propertyActions, 'state', state);
       const indents = indentation.repeat(nestingLevel);
 
       if (children) {

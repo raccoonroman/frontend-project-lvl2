@@ -1,3 +1,6 @@
+import getPropertyAction from '../utils';
+
+
 const isComplexValue = (value) => value instanceof Object;
 
 const buildValueString = (value) => {
@@ -37,11 +40,6 @@ const propertyActions = [
   },
 ];
 
-const getToStringMethod = (currentState) => {
-  const { toString } = propertyActions.find(({ state }) => state === currentState);
-  return toString;
-};
-
 const formatPlain = (ast) => {
   const result = ast.map((it) => {
     const {
@@ -56,7 +54,7 @@ const formatPlain = (ast) => {
       return formatPlain(children);
     }
 
-    const toString = getToStringMethod(state);
+    const { toString } = getPropertyAction(propertyActions, 'state', state);
     const keysChainString = keysChain.join('.');
 
     return toString(keysChainString, newValue, oldValue);
