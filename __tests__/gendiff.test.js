@@ -1,8 +1,13 @@
+import fs from 'fs';
+import path from 'path';
 import gendiff from '../src';
-import expectedRegular from '../__fixtures__/expected-regular';
-import expectedPlain from '../__fixtures__/expected-plain';
-import expectedJson from '../__fixtures__/expected-json';
 
+const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
+const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
+
+const expectedRegular = readFile('expected-regular.txt').trim();
+const expectedPlain = readFile('expected-plain.txt').trim();
+const expectedJson = readFile('expected-json.json').trim();
 
 const relativePath = './__fixtures__/';
 const absolutePath = `${__dirname}/../__fixtures__/`;
