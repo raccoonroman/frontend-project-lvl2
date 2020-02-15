@@ -1,4 +1,4 @@
-import parse from './parsers';
+import parseFile from './parsers';
 import getPropertyAction from './utils';
 import buildAst from './build-ast';
 import formatRegular from './formatters/formatter-regular';
@@ -21,9 +21,9 @@ const formaters = [
   },
 ];
 
-const gendiff = (file1, file2, { format = 'regular' }) => {
-  const obj1 = parse(file1);
-  const obj2 = parse(file2);
+const gendiff = (file1Path, file2Path, { format = 'regular' }) => {
+  const obj1 = parseFile(file1Path);
+  const obj2 = parseFile(file2Path);
   const { formatDiff } = getPropertyAction(formaters, 'name', format);
   const ast = buildAst(obj1, obj2);
   const result = formatDiff(ast);
