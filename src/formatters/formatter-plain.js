@@ -1,4 +1,4 @@
-const isComplexValue = value => value instanceof Object;
+const isComplexValue = (value) => value instanceof Object;
 
 const buildValueString = (value) => {
   if (isComplexValue(value)) {
@@ -26,7 +26,7 @@ const propertyActions = [
   },
   {
     state: 'removed',
-    toString: keysChain => `Property '${keysChain}' was removed`,
+    toString: (keysChain) => `Property '${keysChain}' was removed`,
   },
   {
     state: 'added',
@@ -62,7 +62,7 @@ const formatPlain = (ast) => {
     return toString(keysChainString, newValue, oldValue);
   });
 
-  return result.filter(i => !!i).join('\n');
+  return result.filter((i) => !!i).join('\n');
 };
 
 export default formatPlain;

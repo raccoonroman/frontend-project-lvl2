@@ -71,7 +71,7 @@ const buildAst = (obj1, obj2, nestingLevel = 1, keysChain = []) => {
     return stateObj;
   });
 
-  const diffObject2 = obj2Keys.map(key => getObjState(obj1, obj2, key, nestingLevel, keysChain));
+  const diffObject2 = obj2Keys.map((key) => getObjState(obj1, obj2, key, nestingLevel, keysChain));
 
   const result = uniqBy([...diffObject1, ...diffObject2], 'key');
 

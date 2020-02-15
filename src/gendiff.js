@@ -8,15 +8,15 @@ import formatJson from './formatters/formatter-json';
 const formaters = [
   {
     name: 'regular',
-    formatDiff: ast => formatRegular(ast),
+    formatDiff: (ast) => formatRegular(ast),
   },
   {
     name: 'plain',
-    formatDiff: ast => formatPlain(ast),
+    formatDiff: (ast) => formatPlain(ast),
   },
   {
     name: 'json',
-    formatDiff: ast => formatJson(ast),
+    formatDiff: (ast) => formatJson(ast),
   },
 ];
 

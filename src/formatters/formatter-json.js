@@ -1,10 +1,10 @@
 const extraKeys = ['nestingLevel', 'keysChain'];
 
 const formatJson = (ast) => {
-  const format = arr => arr.map((obj) => {
+  const format = (arr) => arr.map((obj) => {
     const allKeys = Object.keys(obj);
     const result = allKeys
-      .filter(i => !extraKeys.includes(i))
+      .filter((i) => !extraKeys.includes(i))
       .reduce((acc, i) => ({ ...acc, [i]: obj[i] }), {});
 
     if (!obj.children) {
