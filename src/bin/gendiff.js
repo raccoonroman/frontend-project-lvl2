@@ -11,6 +11,6 @@ program
   .option('-f, --format [type]', 'Output format')
 
   .arguments('<firstConfig> <secondConfig>')
-  .action(gendiff);
+  .action((file1Path, file2Path, { format }) => gendiff(file1Path, file2Path, format));
 
 program.parse(process.argv);

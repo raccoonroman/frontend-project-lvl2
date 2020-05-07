@@ -25,14 +25,14 @@ const formaters = [
   },
 ];
 
-const gendiff = (file1Path, file2Path, { format = 'regular' }) => {
+const gendiff = (file1Path, file2Path, format) => {
   const obj1 = parse(getFileExtName(file1Path), getFileContent(file1Path));
   const obj2 = parse(getFileExtName(file2Path), getFileContent(file2Path));
   const { formatDiff } = getPropertyAction(formaters, 'name', format);
   const ast = buildAst(obj1, obj2);
   const result = formatDiff(ast);
 
-  // console.log(result);
+  console.log(result);
   return result;
 };
 

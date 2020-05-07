@@ -15,7 +15,7 @@ const extensions = ['json', 'yml', 'ini'];
 const formats = ['regular', 'plain', 'json'];
 const expectedValues = [expectedRegular, expectedPlain, expectedJson];
 
-const getResult = (pathType, extension, formatName) => gendiff(`${pathType}before.${extension}`, `${pathType}after.${extension}`, { format: formatName });
+const getResult = (pathType, extension, formatName) => gendiff(`${pathType}before.${extension}`, `${pathType}after.${extension}`, formatName);
 
 formats.forEach((format, i) => {
   test.each(extensions)(`gendiff extension: %s, format: ${formats[i]}`, (extension) => {

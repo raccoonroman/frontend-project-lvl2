@@ -25,4 +25,4 @@ publish:
 .PHONY: test
 
 gendiff:
-	npx babel-node -- 'src/bin/gendiff.js' -h
+	npx babel-node -- 'src/bin/gendiff.js' --format plain __fixtures__/before.json __fixtures__/after.json
