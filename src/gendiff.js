@@ -1,10 +1,14 @@
-import parseFile from './parsers';
+import fs from 'fs';
+import path from 'path';
+import parse from './parsers';
 import getPropertyAction from './utils';
 import buildAst from './build-ast';
 import formatRegular from './formatters/formatter-regular';
 import formatPlain from './formatters/formatter-plain';
 import formatJson from './formatters/formatter-json';
 
+const getFileExtName = (filePath) => path.extname(filePath).slice(1);
+const getFileContent = (filePath) => fs.readFileSync(filePath, 'utf8');
 
 const formaters = [
   {
@@ -22,8 +26,8 @@ const formaters = [
 ];
 
 const gendiff = (file1Path, file2Path, { format = 'regular' }) => {
-  const obj1 = parseFile(file1Path);
-  const obj2 = parseFile(file2Path);
+  const obj1 = parse(getFileExtName(file1Path), getFileContent(file1Path));
+  const obj2 = parse(getFileExtName(file2Path), getFileContent(file2Path));
   const { formatDiff } = getPropertyAction(formaters, 'name', format);
   const ast = buildAst(obj1, obj2);
   const result = formatDiff(ast);

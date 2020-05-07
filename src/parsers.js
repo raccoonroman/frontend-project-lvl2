@@ -1,32 +1,24 @@
-import fs from 'fs';
-import path from 'path';
 import yaml from 'js-yaml';
 import ini from 'ini';
 
-const getFileContent = (filePath) => fs.readFileSync(`${filePath}`, 'utf8');
-const isEqualFormats = (filePath, format) => path.extname(filePath) === format;
-
-const fileParsers = [
+const parsers = [
   {
     name: 'json',
-    check: (filePath) => isEqualFormats(filePath, '.json'),
-    parseFile: (filePath) => JSON.parse(getFileContent(filePath)),
+    parse: (data) => JSON.parse(data),
   },
   {
     name: 'yml',
-    check: (filePath) => isEqualFormats(filePath, '.yml'),
-    parseFile: (filePath) => yaml.safeLoad(getFileContent(filePath)),
+    parse: (data) => yaml.safeLoad(data),
   },
   {
     name: 'ini',
-    check: (filePath) => isEqualFormats(filePath, '.ini'),
-    parseFile: (filePath) => ini.parse(getFileContent(filePath)),
+    parse: (data) => ini.parse(data),
   },
 ];
 
-const getFileParser = (filePath) => fileParsers.find(({ check }) => check(filePath));
+const getParser = (formatName) => parsers.find(({ name }) => formatName === name);
 
-export default (filePath) => {
-  const { parseFile } = getFileParser(filePath);
-  return parseFile(filePath);
+export default (formatName, data) => {
+  const { parse } = getParser(formatName);
+  return parse(data);
 };
