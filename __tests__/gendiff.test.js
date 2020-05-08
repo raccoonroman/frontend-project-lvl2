@@ -9,17 +9,16 @@ const expectedRegular = readFile('expected-regular.txt').trim();
 const expectedPlain = readFile('expected-plain.txt').trim();
 const expectedJson = readFile('expected-json.json').trim();
 
-const relativePath = './__fixtures__/';
-const absolutePath = `${__dirname}/../__fixtures__/`;
 const extensions = ['json', 'yml', 'ini'];
 const formats = ['regular', 'plain', 'json'];
 const expectedValues = [expectedRegular, expectedPlain, expectedJson];
 
-const getResult = (pathType, extension, formatName) => gendiff(`${pathType}before.${extension}`, `${pathType}after.${extension}`, formatName);
+const getResult = (extension, formatName) => (
+  gendiff(getFixturePath(`before.${extension}`), getFixturePath(`after.${extension}`), formatName)
+);
 
 formats.forEach((format, i) => {
   test.each(extensions)(`gendiff extension: %s, format: ${formats[i]}`, (extension) => {
-    expect(getResult(relativePath, extension, format)).toBe(expectedValues[i]);
-    expect(getResult(absolutePath, extension, format)).toBe(expectedValues[i]);
+    expect(getResult(extension, format)).toBe(expectedValues[i]);
   });
 });
